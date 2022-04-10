@@ -20,6 +20,10 @@ app.use(morgan('dev'));
 
 app.use('/api', router);
 
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/index.html');
+});
+
 // Error handling to catch 404
 app.all('*', (_req, res) => {
   res.status(404).json({
