@@ -6,12 +6,12 @@ import user from '../services/user';
  * Signup
  * @param {Object} req
  * @param {Object} res
- * @returns {String} Returns token for authentication
+ * @returns {String} token for authentication
  */
 export const signup = async (req, res) => {
-  const { fullname, email, password } = req.body;
+  const { fullName, email, password } = req.body;
 
-  const emailExist = await user.getOne(email);
+  const emailExist = await user.getOne({ email });
   if (emailExist) {
     return res
       .status(409)
@@ -21,14 +21,14 @@ export const signup = async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, salt);
 
   const newUser = await user.create({
-    fullname,
+    fullName,
     email,
     password: hashedPassword,
   });
 
   const token = encode({
     _id: newUser._id,
-    fullname: newUser.fullname,
+    fullName: newUser.fullName,
     email: user.email,
   });
   return res.status(201).json({
@@ -46,7 +46,7 @@ export const signup = async (req, res) => {
  */
 export const login = async (req, res) => {
   const { email, password } = req.body;
-  const userAccount = await user.getOne(email);
+  const userAccount = await user.getOne({ email }, true);
   if (!userAccount) {
     return res
       .status(403)
@@ -63,7 +63,7 @@ export const login = async (req, res) => {
   }
   const token = encode({
     _id: userAccount._id,
-    fullname: userAccount.fullname,
+    fullName: userAccount.fullName,
     email: userAccount.email,
   });
   return res.status(200).json({

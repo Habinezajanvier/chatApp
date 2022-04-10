@@ -1,5 +1,6 @@
-import mongoose from 'mongoose';
-import { User } from '../database';
+import db from '../database';
+
+const { User } = db;
 
 export default {
   /**
@@ -7,16 +8,29 @@ export default {
    */
   getAll: async () => {
     const users = await User.find();
-    if (users && users.length) return { users };
+    const data = users.map((user) => {
+      return {
+        _id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+      };
+    });
+    if (users && users.length) return { users: data };
   },
   /**
    * Getting one user
+   * @param {Object} condition to filter against
+   * @param {Boolean} password true if password have to be retrieved
    */
-  getOne: async (condition) => {
-    const user = await user.findOne({
-      [condition]: condition,
-    });
-    if (user) return { user };
+  getOne: async (condition, password) => {
+    const user = await User.findOne(condition);
+    if (user)
+      return {
+        _id: user._id,
+        fullName: user.fullName,
+        password: password ? user.password : undefined,
+        email: user.email,
+      };
   },
   /**
    * Create user
@@ -26,6 +40,10 @@ export default {
       ...data,
     });
     const user = await newUser.save();
-    return { user };
+    return {
+      _id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+    };
   },
 };

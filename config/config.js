@@ -27,7 +27,7 @@ const test = {
     host: process.env.DB_HOST_TEST,
     port: process.env.DB_PORT_TEST,
     name: process.env.DB_NAME_TEST,
-    database_url: process.env.DATABASE_URL,
+    database_url: process.env.DATABASE_URL_TEST,
   },
 };
 const staging = {
